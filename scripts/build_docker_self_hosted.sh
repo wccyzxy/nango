@@ -15,11 +15,19 @@ if [ -z $GIT_HASH ]; then
   exit
 fi
 
+export DOCKER_BUILDKIT=1
+
 # Move to here no matter where the file was executed
 cd "$(dirname "$0")"
 
+if [ -n "$HTTP_PROXY" ]; then
+  echo "Using HTTP_PROXY: $HTTP_PROXY"
+fi
+if [ -n "$HTTPS_PROXY" ]; then
+  echo "Using HTTPS_PROXY: $HTTPS_PROXY"
+fi
 echo ""
-echo -e "Building self-hosted nangohq/nango-server:hosted-$GIT_HASH"
+echo -e "Building self-hosted wccyzxy/nango-server:hosted-$GIT_HASH"
 
 VERSION=$(node -p "require('../package.json').version")
 
@@ -28,18 +36,18 @@ docker buildx build \
   --build-arg BASE_IMAGE_HASH="$GIT_HASH" \
   --cache-from type=gha \
   --cache-to type=gha,mode=max \
-  -t nangohq/nango-server:hosted \
-  -t "nangohq/nango-server:hosted-$GIT_HASH" \
-  -t "nangohq/nango-server:hosted-$VERSION" \
+  -t wccyzxy/nango-server:hosted \
+  -t "wccyzxy/nango-server:hosted-$GIT_HASH" \
+  -t "wccyzxy/nango-server:hosted-$VERSION" \
   --file ../Dockerfile.self_hosted \
   --output=type=docker \
   ../
 
 if [ $PUSH ]; then
   echo "Pushing"
-  docker push nangohq/nango-server:hosted
-  docker push "nangohq/nango-server:hosted-$GIT_HASH"
-  docker push "nangohq/nango-server:hosted-$VERSION"
+  docker push wccyzxy/nango-server:hosted
+  docker push "wccyzxy/nango-server:hosted-$GIT_HASH"
+  docker push "wccyzxy/nango-server:hosted-$VERSION"
 else
   echo "Not pushing"
 fi

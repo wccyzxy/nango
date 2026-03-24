@@ -22,27 +22,27 @@ services:
         networks:
             - nango
 
-    elasticsearch:
-        container_name: elasticsearch
-        image: elasticsearch:8.13.0
-        ulimits:
-            memlock:
-                soft: -1
-                hard: -1
-        volumes:
-            - elasticsearch-data1:/usr/share/elasticsearch/data
-        ports:
-            - 9500:9200
-            - 9600:9300
-        environment:
-            - discovery.type=single-node
-            - xpack.security.enabled=false
-        networks:
-            - nango
-        deploy:
-            resources:
-                limits:
-                    memory: 2GB
+    # elasticsearch:
+    #     container_name: elasticsearch
+    #     image: elasticsearch:8.13.0
+    #     ulimits:
+    #         memlock:
+    #             soft: -1
+    #             hard: -1
+    #     volumes:
+    #         - elasticsearch-data1:/usr/share/elasticsearch/data
+    #     ports:
+    #         - 9500:9200
+    #         - 9600:9300
+    #     environment:
+    #         - discovery.type=single-node
+    #         - xpack.security.enabled=false
+    #     networks:
+    #         - nango
+    #     deploy:
+    #         resources:
+    #             limits:
+    #                 memory: 1GB
 
     activemq:
         container_name: activemq

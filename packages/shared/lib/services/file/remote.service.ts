@@ -27,6 +27,10 @@ function getCredentials() {
     };
 }
 
+function getEndpoint() {
+    return process.env['AWS_INTEGRATIONS_ENDPOINT'] || process.env['AWS_ENDPOINT'] || '';
+}
+
 function getRegion() {
     return process.env['AWS_INTEGRATIONS_REGION'] || process.env['AWS_REGION'] || 'us-west-2';
 }
@@ -50,8 +54,15 @@ class RemoteFileService {
         } else {
             this.useS3 = !isLocal && !isTest;
         }
+        const endpoint = getEndpoint();
         const credentials = getCredentials();
-        const config: S3ClientConfig = credentials ? { region, credentials } : { region };
+        const config: S3ClientConfig = {
+            region,
+            ...(credentials && { credentials }),
+            ...(endpoint && { endpoint }),
+            requestChecksumCalculation: 'WHEN_REQUIRED',
+            responseChecksumValidation: 'WHEN_REQUIRED'
+        };
         this.client = new S3Client(config);
     }
 

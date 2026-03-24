@@ -21,10 +21,12 @@ if [ -z $GIT_HASH ]; then
   exit
 fi
 
+export DOCKER_BUILDKIT=1
+
 # Move to here no matter where the file was executed
 cd "$(dirname "$0")"
 
-tags="-t nangohq/nango:${GIT_HASH}"
+tags="-t wccyzxy/nango:${GIT_HASH}"
 
 if [ $ACTION == 'build' ]; then
   tags+=" --output=type=docker"
@@ -32,8 +34,14 @@ else
   tags+=" --output=type=registry"
 fi
 
+if [ -n "$HTTP_PROXY" ]; then
+  echo "Using HTTP_PROXY: $HTTP_PROXY"
+fi
+if [ -n "$HTTPS_PROXY" ]; then
+  echo "Using HTTPS_PROXY: $HTTPS_PROXY"
+fi
 echo ""
-echo -e "Building nangohq/nango\n"
+echo -e "Building wccyzxy/nango\n"
 
 docker buildx build \
   --platform linux/amd64 \
