@@ -37,8 +37,6 @@ docker buildx build \
   --cache-from type=gha \
   --cache-to type=gha,mode=max \
   -t wccyzxy/nango-server:hosted \
-  -t "wccyzxy/nango-server:hosted-$GIT_HASH" \
-  -t "wccyzxy/nango-server:hosted-$VERSION" \
   --file ../Dockerfile.self_hosted \
   --output=type=docker \
   ../
@@ -46,8 +44,6 @@ docker buildx build \
 if [ $PUSH ]; then
   echo "Pushing"
   docker push wccyzxy/nango-server:hosted
-  docker push "wccyzxy/nango-server:hosted-$GIT_HASH"
-  docker push "wccyzxy/nango-server:hosted-$VERSION"
 else
   echo "Not pushing"
 fi

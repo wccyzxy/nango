@@ -89,6 +89,29 @@ export class AuthorizationModal {
             this.handleMessage(message, successHandler);
             this.isProcessingMessage = false;
         };
+
+        this.swClient.onerror = (error: Event) => {
+            if (this.debug) {
+                console.error(debugLogPrefix, 'WebSocket connection error:', error);
+            }
+            this.errorHandler(
+                'unknown_error',
+                `WebSocket connection failed to ${webSocketUrl}. Please check your network connection and server configuration.`
+            );
+        };
+
+        this.swClient.onclose = (event: CloseEvent) => {
+            if (this.debug) {
+                console.log(debugLogPrefix, 'WebSocket connection closed:', event.code, event.reason);
+            }
+            // Only trigger error if not a normal closure (1000) and not already handling a message
+            if (event.code !== 1000 && !this.isProcessingMessage) {
+                this.errorHandler(
+                    'unknown_error',
+                    `WebSocket connection closed unexpectedly (code: ${event.code}, reason: ${event.reason || 'no reason provided'}).`
+                );
+            }
+        };
     }
 
     setModal(modal: Window) {
